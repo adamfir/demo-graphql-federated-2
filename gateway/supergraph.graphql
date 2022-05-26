@@ -4,7 +4,6 @@ schema
   @link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
 {
   query: Query
-  mutation: Mutation
 }
 
 directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
@@ -20,8 +19,7 @@ directive @link(url: String, as: String, for: link__Purpose, import: [link__Impo
 scalar join__FieldSet
 
 enum join__Graph {
-  LOCATIONS @join__graph(name: "locations", url: "https://flyby-locations-sub.herokuapp.com/")
-  REVIEWS @join__graph(name: "reviews", url: "https://flyby-reviews-sub.herokuapp.com/")
+  PROFILES @join__graph(name: "profiles", url: "http://localhost:8003/")
   USERS @join__graph(name: "users", url: "http://localhost:8002/")
 }
 
@@ -39,99 +37,25 @@ enum link__Purpose {
   EXECUTION
 }
 
-type Location
-  @join__type(graph: LOCATIONS, key: "id")
-  @join__type(graph: REVIEWS, key: "id")
+type Profile
+  @join__type(graph: PROFILES, key: "id")
 {
   id: ID!
-
-  """The name of the location"""
-  name: String! @join__field(graph: LOCATIONS)
-
-  """A short description about the location"""
-  description: String! @join__field(graph: LOCATIONS)
-
-  """The location's main photo as a URL"""
-  photo: String! @join__field(graph: LOCATIONS)
-
-  """The calculated overall rating based on all reviews"""
-  overallRating: Float @join__field(graph: REVIEWS)
-
-  """All submitted reviews about this location"""
-  reviewsForLocation: [Review]! @join__field(graph: REVIEWS)
-}
-
-input LocationReviewInput
-  @join__type(graph: REVIEWS)
-{
-  """Written text"""
-  comment: String!
-
-  """A number from 1 - 5 with 1 being lowest and 5 being highest"""
-  rating: Int!
-
-  """Location Id"""
-  locationId: String!
-}
-
-type Mutation
-  @join__type(graph: REVIEWS)
-{
-  submitReview(locationReview: LocationReviewInput): SubmitReviewResponse
+  address: String
 }
 
 type Query
-  @join__type(graph: LOCATIONS)
-  @join__type(graph: REVIEWS)
+  @join__type(graph: PROFILES)
   @join__type(graph: USERS)
 {
-  """
-  The full list of locations presented by the Interplanetary Space Tourism department
-  """
-  locations: [Location!]! @join__field(graph: LOCATIONS)
-
-  """The details of a specific location"""
-  location(id: ID!): Location @join__field(graph: LOCATIONS)
-
-  """The three latest reviews submitted for FlyBy's locations"""
-  latestReviews: [Review!]! @join__field(graph: REVIEWS)
   me: User @join__field(graph: USERS)
 }
 
-type Review
-  @join__type(graph: REVIEWS)
-{
-  id: ID!
-
-  """Written text"""
-  comment: String
-
-  """A number from 1 - 5 with 1 being lowest and 5 being highest"""
-  rating: Int
-
-  """The location the review is about"""
-  location: Location
-}
-
-type SubmitReviewResponse
-  @join__type(graph: REVIEWS)
-{
-  """Similar to HTTP status code, represents the status of the mutation"""
-  code: Int!
-
-  """Indicates whether the mutation was successful"""
-  success: Boolean!
-
-  """Human-readable message for the UI"""
-  message: String!
-
-  """Newly created review"""
-  locationReview: Review
-}
-
 type User
+  @join__type(graph: PROFILES, key: "id")
   @join__type(graph: USERS, key: "id")
 {
   id: ID!
-  username: String
+  profile: Profile @join__field(graph: PROFILES)
+  username: String @join__field(graph: USERS)
 }
