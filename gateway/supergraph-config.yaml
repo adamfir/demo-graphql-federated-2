@@ -8,3 +8,7 @@ subgraphs:
     routing_url: https://flyby-reviews-sub.herokuapp.com/
     schema:
       subgraph_url: https://flyby-reviews-sub.herokuapp.com/
+  users:
+    routing_url: "http://localhost:8002/"
+    schema:
+      subgraph_url: "http://localhost:8002/"
