@@ -7,7 +7,7 @@ dotenv.config();
 // define User type
 interface User {
   id: string;
-  username: string;
+  username?: string;
 }
 
 // static fetchUserById function
@@ -25,7 +25,7 @@ const typeDefs = gql`
 
   type Query {
     me: User
-    users: [User]
+    users(ids: [String!]): [User]
   }
 
   type User @key(fields: "id") {
@@ -39,8 +39,11 @@ const resolvers = {
     me() {
       return fetchUserById("1")
     },
-    users() {
-      return [fetchUserById("id-1"), fetchUserById("id-2"), fetchUserById("id-3"), fetchUserById("id-4")]
+    users(parent: any, args: any, context: any, info: any) {
+      if (!args.ids) {
+        return [fetchUserById("id-1"), fetchUserById("id-2"), fetchUserById("id-3"), fetchUserById("id-4")];
+      }
+      return args.ids.map((id: string) => fetchUserById(id));
     }
   },
   User: {

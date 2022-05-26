@@ -42,14 +42,16 @@ type Profile
 {
   id: ID!
   address: String
+  user: User
 }
 
 type Query
   @join__type(graph: PROFILES)
   @join__type(graph: USERS)
 {
+  profile(id: ID!): Profile @join__field(graph: PROFILES)
   me: User @join__field(graph: USERS)
-  users: [User] @join__field(graph: USERS)
+  users(ids: [String!]): [User] @join__field(graph: USERS)
 }
 
 type User

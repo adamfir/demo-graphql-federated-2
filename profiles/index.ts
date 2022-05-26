@@ -7,13 +7,14 @@ dotenv.config();
 // define Profile type
 interface Profile {
   id: string;
-  address: string;
+  address?: string;
+  user?: User;
 }
 
 // define User type
 interface User {
   id: string;
-  profile: Profile;
+  profile?: Profile;
 }
 
 // static fetchProfileById function
@@ -21,6 +22,9 @@ const fetchProfileById = (id: string): Profile => {
   const profile: Profile = {
     id,
     address: `Psr. Sudiarto No. 793 ${id}`,
+    user: {
+      id: id,
+    }
   };
   return profile;
 } 
@@ -29,9 +33,14 @@ const typeDefs = gql`
   extend schema
     @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
+  type Query {
+    profile(id: ID!): Profile
+  }
+
   type Profile @key(fields: "id") {
     id: ID!
     address: String
+    user: User
   }
 
   type User @key(fields: "id") {
@@ -41,10 +50,14 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
+  Query: {
+    profile(parent: any, args: any, context: any, info: any) {
+      return fetchProfileById(args.id);
+    }
+  },
   User: {
-    __resolveReference(user: User){
-      user.profile = fetchProfileById(user.id);
-      return user;
+    profile(user: User){
+      return fetchProfileById(user.id);
     }
   },
   Profile: {
@@ -58,7 +71,12 @@ const server = new ApolloServer({
   schema: buildSubgraphSchema({
     typeDefs,
     resolvers,
-  })
+  }),
+  context: ({ req }) => {
+    return {
+      headers: req.headers,
+    };
+  }
 });
 
 server.listen(process.env.PORT || 8003).then(({ url }) => {
