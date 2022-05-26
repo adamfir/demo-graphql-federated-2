@@ -1,0 +1,4 @@
+type Mutation {
+  # your mutation here
+  createUser(username: String): User
+}

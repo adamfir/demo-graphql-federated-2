@@ -5,6 +5,8 @@ import { gql } from "apollo-server";
 
 // readGraphqlFiles extract all graphql schema from the directory
 // read all files with .graphql extension
+// temporary solution to include all .graphql files to output dir:
+// https://github.com/ardatan/graphql-tools/issues/273#issuecomment-444315458
 function readGraphqlFiles(inputDir?: string) : DocumentNode[] {
   const graphqlSchemas: DocumentNode[] = [];
   const currentDir = inputDir || __dirname;
