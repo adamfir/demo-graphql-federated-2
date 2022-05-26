@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
+    "copy-schemas": "cpx ./delivery/**/*.graphql dist/delivery",
+    "build": "npx tsc && npm run copy-schemas",
     "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "dev": "concurrently \"npx tsc --watch\" \"npm run copy-schemas\" \"nodemon -q dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/node": "^17.0.35",
     "concurrently": "^7.2.1",
+    "cpx": "^1.5.0",
     "nodemon": "^2.0.16",
     "typescript": "^4.7.2"
   }

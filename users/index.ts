@@ -1,6 +1,7 @@
 import { ApolloServer, gql } from "apollo-server";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import dotenv from "dotenv";
+import typeDefs from "./delivery/graphql/schema";
 
 dotenv.config();
 
@@ -18,21 +19,6 @@ const fetchUserById = (id: string): User => {
   };
   return user;
 } 
-
-const typeDefs = gql`
-  extend schema
-    @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-
-  type Query {
-    me: User
-    users(ids: [String!]): [User]
-  }
-
-  type User @key(fields: "id") {
-    id: ID!
-    username: String
-  }
-`;
 
 const resolvers = {
   Query: {
