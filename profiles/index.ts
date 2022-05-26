@@ -20,7 +20,7 @@ interface User {
 const fetchProfileById = (id: string): Profile => {
   const profile: Profile = {
     id,
-    address: `Address for id=${id}`,
+    address: `Psr. Sudiarto No. 793 ${id}`,
   };
   return profile;
 } 

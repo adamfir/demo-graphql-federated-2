@@ -49,6 +49,7 @@ type Query
   @join__type(graph: USERS)
 {
   me: User @join__field(graph: USERS)
+  users: [User] @join__field(graph: USERS)
 }
 
 type User

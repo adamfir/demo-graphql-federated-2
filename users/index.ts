@@ -25,6 +25,7 @@ const typeDefs = gql`
 
   type Query {
     me: User
+    users: [User]
   }
 
   type User @key(fields: "id") {
@@ -37,6 +38,9 @@ const resolvers = {
   Query: {
     me() {
       return fetchUserById("1")
+    },
+    users() {
+      return [fetchUserById("id-1"), fetchUserById("id-2"), fetchUserById("id-3"), fetchUserById("id-4")]
     }
   },
   User: {
