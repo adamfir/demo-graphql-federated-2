@@ -73,9 +73,17 @@ const server = new ApolloServer({
     resolvers,
   }),
   context: ({ req }) => {
-    return {
-      headers: req.headers,
-    };
+    const ctx : {
+      token?: string;
+      roles: string[];
+      userId?: string;
+    } = {
+      token: req.headers.authorization,
+      roles: req.headers["x-user-roles"] && (req.headers["x-user-roles"] as string)?.split(",") || [],
+      userId: req.headers["x-user-id"] as string,
+    }
+
+    return ctx;
   }
 });
 

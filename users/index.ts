@@ -10,7 +10,20 @@ const server = new ApolloServer({
   schema: buildSubgraphSchema({
     typeDefs,
     resolvers,
-  })
+  }),
+  context: ({ req }) => {
+    const ctx : {
+      token?: string;
+      roles: string[];
+      userId?: string;
+    } = {
+      token: req.headers.authorization,
+      roles: req.headers["x-user-roles"] && (req.headers["x-user-roles"] as string)?.split(",") || [],
+      userId: req.headers["x-user-id"] as string,
+    }
+
+    return ctx;
+  }
 });
 
 server.listen(process.env.PORT || 8002).then(({ url }) => {
