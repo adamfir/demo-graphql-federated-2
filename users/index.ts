@@ -1,18 +1,19 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer } from "apollo-server";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import dotenv from "dotenv";
 import typeDefs from "./delivery/graphql/schema";
 import resolvers from "./delivery/graphql/";
+import { authDirectiveTransformer } from "./delivery/graphql/directive/auth";
 
 dotenv.config();
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema({
+  schema: authDirectiveTransformer(buildSubgraphSchema({
     typeDefs,
     resolvers,
-  }),
+  })),
   context: ({ req }) => {
-    const ctx : {
+    const ctx: {
       token?: string;
       roles: string[];
       userId?: string;
@@ -27,5 +28,5 @@ const server = new ApolloServer({
 });
 
 server.listen(process.env.PORT || 8002).then(({ url }) => {
-    console.log(`🚀 Server ready at ${url}`);
+  console.log(`🚀 Server ready at ${url}`);
 });

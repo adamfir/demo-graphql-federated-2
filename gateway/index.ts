@@ -33,9 +33,9 @@ const server = new ApolloServer({
     if (req.headers.authorization) {
       // TODO: put any auth validation here, below just example
       if (req.headers.authorization === 'reject-me') {
-        throw new AuthenticationError('Unauthorized');
+        throw new AuthenticationError('not authorized');
       } else if (req.headers.authorization === 'allow-me') {
-        ctx.roles.push('admin');
+        ctx.roles.push('user');
         ctx.userId = 'id-123';
       }
     }

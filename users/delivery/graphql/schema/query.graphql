@@ -1,4 +1,4 @@
 type Query {
-  me: User
-  users(ids: [String!]): [User]
+  me: User @auth(requires: USER)
+  users(ids: [String!]): [User] @auth(requires: [USER, ADMIN])
 }

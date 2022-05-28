@@ -1,6 +1,7 @@
 import { ApolloServer, gql } from "apollo-server";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import dotenv from "dotenv";
+import { authDirectiveTransformer, authDirectiveTypeDefs } from "./delivery/graphql/directive/auth";
 
 dotenv.config();
 
@@ -47,6 +48,11 @@ const typeDefs = gql`
     id: ID!
     profile: Profile
   }
+
+  enum Role {
+    ADMIN
+    USER
+  }
 `;
 
 const resolvers = {
@@ -68,10 +74,10 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema({
-    typeDefs,
+  schema: authDirectiveTransformer(buildSubgraphSchema({
+    typeDefs: [typeDefs, gql`${authDirectiveTypeDefs}`],
     resolvers,
-  }),
+  })),
   context: ({ req }) => {
     const ctx : {
       token?: string;

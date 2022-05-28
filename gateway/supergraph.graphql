@@ -7,6 +7,8 @@ schema
   mutation: Mutation
 }
 
+directive @auth(requires: [Role]) on MUTATION | QUERY
+
 directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
 directive @join__graph(name: String!, url: String!) on ENUM_VALUE
@@ -59,6 +61,14 @@ type Query
   profile(id: ID!): Profile @join__field(graph: PROFILES)
   me: User @join__field(graph: USERS)
   users(ids: [String!]): [User] @join__field(graph: USERS)
+}
+
+enum Role
+  @join__type(graph: PROFILES)
+  @join__type(graph: USERS)
+{
+  ADMIN
+  USER
 }
 
 type User

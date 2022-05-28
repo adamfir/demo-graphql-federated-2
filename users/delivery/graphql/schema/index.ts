@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { DocumentNode } from "graphql";
 import { gql } from "apollo-server";
+import { authDirectiveTypeDefs } from "../directive/auth";
 
 // readGraphqlFiles extract all graphql schema from the directory
 // read all files with .graphql extension
@@ -28,6 +29,8 @@ function readGraphqlFiles(inputDir?: string) : DocumentNode[] {
 }
 
 const graphqlSchemas = readGraphqlFiles();
+// inject @auth directive
+graphqlSchemas.push(gql`${authDirectiveTypeDefs}`)
 
 // export the schema
 export default graphqlSchemas;
